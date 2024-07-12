@@ -1,0 +1,89 @@
+html{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0px;
+}
+
+.top-bar, .menu{
+    /* outline: 1px solid black; */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 1.6rem;
+
+}
+
+.menuItem{ 
+    position: relative;
+    cursor: pointer;
+}
+
+.menuItem:hover{
+    background-color: rgb(183, 179, 179);
+}
+
+.image{
+    height: 1.5rem;
+}
+.menu{
+    border: 1px solid black;
+}
+
+ul{
+    
+    padding-top: 0.5rem;
+}
+li{
+    list-style: none;
+    margin-left: -2.4rem;
+}
+.list{
+    /* outline: 1px solid black; */
+    position: absolute;
+
+    width: 4rem;
+    top: 4px;
+    display: none;
+    background-color:rgb(230, 159, 65);
+}
+
+
+li:hover{
+    background-color: rgb(255, 149, 0);
+    cursor: pointer;
+}
+
+.volume:hover .list,.playback:hover .list{
+ display: block;
+}
+
+.video{
+    height: calc(100vh - 5.3rem);
+  
+   background-color: black;
+}
+.footer{
+    height: 2rem;
+}
+
+
+.menu #file{
+    display: none;
+}
+
+
+.video{
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: -1;
+}
+
+.biglogo{
+    height: 12rem;
+ position: absolute;
+ top: 25%;
+ left: 43%;
+} 
