@@ -15,6 +15,9 @@ body{
 
 }
 
+.container{
+    position: relative;
+}
 .menuItem{ 
     position: relative;
     cursor: pointer;
@@ -82,8 +85,31 @@ li:hover{
 }
 
 .biglogo{
-    height: 12rem;
+height: 12rem;
  position: absolute;
  top: 25%;
  left: 43%;
-} 
+}
+
+
+
+.toast{
+    position: absolute;
+    font-size: 2rem;
+   
+    right: 1rem;
+    top:5rem;
+    color: rgb(255, 255, 255);
+    /* background-color: rgb(211, 211, 211); */
+    font-size: 2rem; 
+}
+
+
+.fa-pause, .fa-play, .fa-expand{
+padding-top: 0.2rem;
+font-size: 1rem;
+padding-left: 1rem;
+    cursor: pointer;
+    opacity:0.5; 
+    pointer-events: none;
+}
