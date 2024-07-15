@@ -8,11 +8,6 @@ media.addEventListener("click",()=>{
 })
 
 
-// Full Screen.......................
-
-
-
-
 fileopen.addEventListener("change",(obj)=>{
  
     const files=obj.target.files[0];
@@ -41,14 +36,18 @@ fileopen.addEventListener("change",(obj)=>{
     video.volume=0.3
     video.setAttribute("class","myvideo");
 
+    //so that error don't occur as progressLoop may run even before the cur time loads so that will give error to us
     video.addEventListener("loadedmetadata",function(){
-        // your time will there
+
+            //calling the progress bar function
+             progressLoop();
     })
 
     //make icons visible if video is there
     fullScreen.style.cssText="opacity:1; pointer-events: auto;";
-    play.style.cssText="opacity:1; pointer-events: auto;";
     pause.style.cssText="opacity:1; pointer-events: auto;";
+
+    
    
 });
 
@@ -103,33 +102,6 @@ setToast(Math.floor(video.volume * 100) + " %");
 
 
 
-//************ pause the video
-const pause=document.querySelector('.fa-pause');
-pause.addEventListener("click",()=>{
-    const video=getVideo();
-    if(video==null){
-        return;
-    }
-    video.pause();
-    
-});
-
-
-//************** play the video
-const play=document.querySelector('.fa-play');
-play.addEventListener("click",()=>{
-    const video=getVideo();
-    if(video==null){
-        alert("please select a video first!!");
-        return;
-    }
-    video.play();
-
-
-    
-
-});
-
 
 //************ Speed Up
 
@@ -183,18 +155,86 @@ function setToast(text){
     }, 3000);
 }
 
-    
 
+
+
+// Full Screen.......................
 const fullScreen = document.querySelector(".fa-expand");
 
 fullScreen.addEventListener("click",()=>{
    const video=getVideo();
     
     if(video==null){
-        // fullScreen.style.cssText="opacity:0.5; pointer-events: none;";
-        alert("please select a video first!!");
         return;
     }
 
     video.requestFullscreen();
 })
+
+
+
+// to get the timer time in proper format........................
+const convertSeconds = (seconds) => {
+    const hours = Math.floor(seconds / 3600)
+    const min = Math.floor((seconds % 3600) / 60)
+    const sec = Math.floor(seconds % 60);
+    if (hours > 0) {
+      return `${String(hours).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')} `
+    } else {
+      return `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+    }
+
+  }
+
+
+//Porgress Bar.......................
+const progress = document.getElementById("progress");
+const timer = document.getElementById( "timer" );
+ 
+function progressLoop() {
+  setInterval(function () {
+        const video=getVideo();
+
+    progress.value = Math.round((video.currentTime / video.duration) * 100);
+
+
+    timer.innerHTML =convertSeconds(video.currentTime);
+    const totaldur = document.getElementById("totaldur");
+totaldur.innerHTML =convertSeconds(video.duration);
+
+});
+}
+
+
+
+
+
+
+
+//************ pause the video
+const pause=document.querySelector('.fa-pause');
+pause.addEventListener("click",()=>{
+    const video=getVideo();
+    if(video==null){
+        return;
+    }
+   
+    video.pause();
+    pause.style.cssText="opacity:0; pointer-events:none;";
+    play.style.cssText="opacity:1; pointer-events: auto;";
+    
+     
+});
+
+
+//************** play the video
+const play=document.querySelector('.fa-play');
+play.addEventListener("click",playfun=()=>{
+    const video=getVideo();
+    if(video==null){
+        return;
+    }
+    video.play();
+    pause.style.cssText="opacity:1; pointer-events:auto;";
+    play.style.cssText="opacity:0; pointer-events: none;";
+});

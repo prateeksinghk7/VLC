@@ -63,8 +63,7 @@ li:hover{
 }
 
 .video{
-    height: calc(100vh - 5.3rem);
-  
+    height: calc(100vh - 5.8rem);
    background-color: black;
 }
 .footer{
@@ -91,7 +90,10 @@ height: 12rem;
  left: 43%;
 }
 
-
+.footer{
+    display: flex;
+    flex-direction: column;
+}
 
 .toast{
     position: absolute;
@@ -110,6 +112,70 @@ padding-top: 0.2rem;
 font-size: 1rem;
 padding-left: 1rem;
     cursor: pointer;
-    opacity:0.5; 
-    pointer-events: none;
+ opacity:0.5; 
+  pointer-events: none; 
 }
+
+.footerOptions{
+    display: flex;
+    position: relative;
+
+}
+
+.fa-play{
+    position: absolute;
+   display: inline;
+   opacity: 0; 
+}
+
+
+.progressbar{
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    text-align: center;
+    padding-top:5px;
+    height: 1rem;
+}
+
+
+#timer{
+  min-width: 3.5rem;
+  max-width: 5%;
+  padding-left: 1px;
+}
+#totaldur{
+   min-width: 3.5rem;
+
+}
+#progress{
+    border: 1px solid black;
+   width: 90%;
+}
+progress[value] {
+
+   
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+    color: dodgerblue;
+  
+    height: 15px;
+
+    width: 100%;
+}
+
+
+/* WebKit styles */
+ progress[value]::-webkit-progress-bar {
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(225, 0, 0, 0.25) inset;
+} 
+
+progress[value]::-webkit-progress-value {
+    background-image: 
+    linear-gradient(to right, green, cyan);
+    border-radius: 3px;
+    position: relative;
+    transition: width 1s linear;
+} 
