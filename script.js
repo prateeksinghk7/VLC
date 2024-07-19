@@ -1,240 +1,355 @@
-const media=document.querySelector('#media');
-const fileopen=document.querySelector("#file");
-const videoDiv=document.querySelector(".video");
-const biglogo=document.querySelector(".biglogo");
-media.addEventListener("click",()=>{
-    fileopen.click();
-   
-})
 
 
-fileopen.addEventListener("change",(obj)=>{
- 
-    const files=obj.target.files[0];
-    console.log(files);
-    const link=URL.createObjectURL(files)
-    console.log(files.type)
+const videoBtn = document.querySelector("#videoBtn");
+const videoInput = document.querySelector("#videoInput");
+const videoPlayer = document.querySelector("#main");
+const totalTimeElem = document.querySelector("#totalTime");
+const currentTimeElem = document.querySelector("#currentTime");
+const slider = document.querySelector("#slider");
 
-    //here we used split fucntion to get the string split wherever the '/' is and poped the the last element out......
-    console.log(files.type.split('/').pop());
-    const filetype=files.type.split('/').pop();
-    if(filetype !== "mp4"){
-        alert("File type not supported\nTry with some other file type");
-       return;
-    }
-    //to remove previous video if any(arleady exits)
-    while (videoDiv.firstChild) {
-        videoDiv.removeChild(videoDiv.firstChild);
-    }
 
-    //**** creation of div element ***/
-    const video=document.createElement("video");
-    video.src=link;
-    // video.controls=true; 
-    videoDiv.appendChild(video);
-    video.autoplay=true;
-    video.volume=0.3
-    video.setAttribute("class","myvideo");
+let video = ""
+let duration;
+let timerObj;
+let currentPlayTime = 0;
+let isPlaying = false;
 
-    //so that error don't occur as progressLoop may run even before the cur time loads so that will give error to us
-    video.addEventListener("loadedmetadata",function(){
 
-            //calling the progress bar function
-             progressLoop();
-    })
 
-    //make icons visible if video is there
-    fullScreen.style.cssText="opacity:1; pointer-events: auto;";
-    pause.style.cssText="opacity:1; pointer-events: auto;";
-
-    
-   
-});
-
-//Function to get video element
-const getVideo =()=>{
-return document.querySelector(".myvideo");
+const handleInput = () => {
+    // console.log("Input is clicked");
+    // you have make it click
+    videoInput.click();
 }
+const acceptInputHandler = (obj) => {
+    let selectedVideo;
+    // console.log(obj);
+    if (obj.type == "drop") {
+        selectedVideo = obj.dataTransfer.files[0]
 
-
-//********************* Volume UP *******************/
-
-
-const volumeUp=document.querySelector("#volumeUp");
-
-volumeUp.addEventListener('click',()=>{
-    const video=getVideo();
-if(video==null){
-    return;
-}
-
-if(video.volume > 0.95){
-    setToast("Max. Volume");
-    return;
-}
-
-video.volume = video.volume+0.025;
-
-setToast(Math.floor(video.volume * 100) + " %");
-})
-
-//********************* Volume Down *******************/
-
-
-
-const volumeDown=document.querySelector("#volumeDown");
-volumeDown.addEventListener('click',()=>{
-    const video=getVideo();
-if(video==null){
-    return;
-}
-
-if(video.volume < 0.1){
-    setToast("Min. Volume");
-    return;
-}
-
-video.volume = video.volume-0.025;
-
-setToast(Math.floor(video.volume * 100) + " %");
-})
-
-
-
-
-
-//************ Speed Up
-
-const speedUp=document.querySelector("#speedUp");
-const speedDown=document.querySelector("#speedDown");
-
-speedUp.addEventListener("click",()=>{
-    const video=getVideo();
-    if(video==null){
-        return;
-    }
-    if(video.playbackRate > 2.75){
-        setToast("Max. Speed");
-        return;
-    }
-    video.playbackRate+= 0.25;
- 
-    setToast(video.playbackRate + " X");
-
-})
-
-//*********** Speed Down
-
-speedDown.addEventListener("click",()=>{
-    const video=getVideo();
-    if(video==null){
-        return;
-    }
-    if(video.playbackRate < 0.26){
-        setToast("Min. Speed");
-        return;
-    }
-    video.playbackRate-= 0.25;
-
-    
-    setToast(video.playbackRate + " X");
-
-})
-
-
-// Toast.......................
-
-const toast=document.querySelector(".toast");
-function setToast(text){
-
-    toast.textContent=text;
-    toast.style.display="block";
-    console.log(text)
-    setTimeout(() => {
-        toast.style.display="none";
-    }, 3000);
-}
-
-
-
-
-// Full Screen.......................
-const fullScreen = document.querySelector(".fa-expand");
-
-fullScreen.addEventListener("click",()=>{
-   const video=getVideo();
-    
-    if(video==null){
-        return;
-    }
-
-    video.requestFullscreen();
-})
-
-
-
-// to get the timer time in proper format........................
-const convertSeconds = (seconds) => {
-    const hours = Math.floor(seconds / 3600)
-    const min = Math.floor((seconds % 3600) / 60)
-    const sec = Math.floor(seconds % 60);
-    if (hours > 0) {
-      return `${String(hours).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')} `
     } else {
-      return `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+        selectedVideo = obj.target.files[0];
+    }
+    //  src -> base64 
+    const link = URL.createObjectURL(selectedVideo);
+    // console.log(link);
+
+    const videoElement = document.createElement("video");
+    videoElement.src = link;
+    videoElement.setAttribute("class", "video");
+
+
+    // check if there are any video already present
+    if (videoPlayer.children.length > 0) {
+
+        // if present -> remove it 
+        videoPlayer.removeChild(videoPlayer.children[0]);
     }
 
-  }
+    //  //to remove previous video if any(arleady exits)
+    //  while (videoDiv.firstChild) {
+    //     videoDiv.removeChild(videoDiv.firstChild);
+    // }
 
 
-//Porgress Bar.......................
-const progress = document.getElementById("progress");
-const timer = document.getElementById( "timer" );
- 
-function progressLoop() {
-  setInterval(function () {
-        const video=getVideo();
 
-    progress.value = Math.round((video.currentTime / video.duration) * 100);
+    // now after the above check -> add the videoElement
+    videoPlayer.appendChild(videoElement);
+    video = videoElement;
+    isPlaying = true;
+    setPlayPause();
+    videoElement.play();
+    videoElement.volume = 0.3;
+    videoElement.addEventListener("loadedmetadata", function () {
+
+        // it gives in decimal value -> convert that into seconds
+        duration = Math.round(videoElement.duration);
+        // convert seconds into hrs:mins:secs
+        let time = timeFormat(duration);
+        totalTimeElem.innerText = time;
+        slider.setAttribute("max", duration);
+        startTimer();
+    })
+}
+
+videoBtn.addEventListener("click", handleInput);
+// when file is selected
+videoInput.addEventListener("change", acceptInputHandler);
+
+/*******************volume and speed*******************/
+// select the element
+const speedUp = document.querySelector("#speedUp");
+const speedDown = document.querySelector("#speedDown");
+const volumeUp = document.querySelector("#volumeUp");
+const volumeDown = document.querySelector("#volumeDown");
+const toast = document.querySelector(".toast");
+
+const speedUpHandler = () => {
+    // * where is the video-> 
+    const videoElement = document.querySelector("video");
+    if (videoElement == null) {
+        return;
+    }
+    // i want that playback speed should be at max 300%
+    if (videoElement.playbackRate > 3) {
+        return;
+    }
+    // video -> speed increase
+    const increaseSpeed = videoElement.playbackRate + 0.5;
+    videoElement.playbackRate = increaseSpeed;
+
+    showToast(increaseSpeed + "X");
+
+    // which property you will use to increase it's speed 
+    // * how much you want to increase
+}
+const speedDownhandler = () => {
+    const videoElement = document.querySelector("video");
+    if (videoElement == null) {
+        return;
+    }
+    if (videoElement.playbackRate > 0) {
+        // video -> speed decrease
+        const decreasedSpeed = videoElement.playbackRate - 0.5;
+        videoElement.playbackRate = decreasedSpeed;
+        console.log("decreased speed", decreasedSpeed)
+        showToast(decreasedSpeed + "X");
+    }
+}
+
+const volumeUpHandler = () => {
+    // select the video
+    const videoElement = document.querySelector("video");
+    if (videoElement == null) {
+        return;
+    }
+    // property to play with volume 
+    if (videoElement.volume >= 0.99) {
+        return;
+    }
+    const increasedVolume = videoElement.volume + 0.1
+    videoElement.volume = increasedVolume;
+    // console.log("increseas volume", increasedVolume);
+    const percentage = (increasedVolume * 100) + "%";
+    showToast(percentage)
+}
+
+const volumeDownHandler = () => {
+    // select the video
+    const videoElement = document.querySelector("video");
+    if (videoElement == null) {
+        return;
+    }
+    // property to play with volume 
+    if (videoElement.volume <= 0.1) {
+        videoElement.volume = 0;
+        return
+    }
+    const decreaseVolume = videoElement.volume - 0.1;
+    videoElement.volume = decreaseVolume
+    const percentage = (decreaseVolume * 100) + "%";
+    showToast(percentage)
+}
 
 
-    timer.innerHTML =convertSeconds(video.currentTime);
-    const totaldur = document.getElementById("totaldur");
-totaldur.innerHTML =convertSeconds(video.duration);
+function showToast(message) {
+    // toast show
+    toast.textContent = message;
+    toast.style.display = "block";
+    setTimeout(() => {
+        toast.style.display = "none"
+    }, 1000);
+}
 
-});
+
+// identify on which event your logic should trigger
+speedUp.addEventListener("click", speedUpHandler);
+speedDown.addEventListener("click", speedDownhandler)
+volumeUp.addEventListener("click", volumeUpHandler);
+volumeDown.addEventListener("click", volumeDownHandler);
+
+
+/***********controls****************************************/
+const handleFullScreen = () => {
+    if(video==""){
+        return;
+    }
+
+    videoPlayer.requestFullscreen();
+    
+}
+
+const fullScreenElem = document.querySelector("#fullScreen");
+fullScreenElem.addEventListener("click", handleFullScreen)
+// adding seek behavior in slider
+slider.addEventListener("change", function (e) {
+    let value = e.target.value;
+    video.currentTime = value;
+})
+
+/***********forward and backward button*************/
+function forward() {
+    if(video==""){
+        return;
+    }
+    
+    currentPlayTime = Math.round(video.currentTime) + 5;
+    video.currentTime = currentPlayTime;
+    slider.setAttribute("value", currentPlayTime);
+    showToast("Forward by 5 sec");
+    let time = timeFormat(currentPlayTime);
+    currentTimeElem.innerText = time;
+}
+
+function backward() {
+    if(video==""){
+        return;
+    }
+    currentPlayTime = Math.round(video.currentTime) - 5;
+    video.currentTime = currentPlayTime;
+    slider.setAttribute("value", currentPlayTime);
+    showToast("Backward by 5 sec");
+    let time = timeFormat(currentPlayTime);
+    currentTimeElem.innerText = time;
+}
+
+
+const forwardBtn = document.querySelector("#forwardBtn");
+const backwardBtn = document.querySelector("#backBtn");
+forwardBtn.addEventListener("click", forward);
+backwardBtn.addEventListener("click", backward);
+/****************play pause********************/
+const playPauseContainer = document.querySelector("#playPause");
+function setPlayPause() {
+    if (isPlaying === true) {
+        playPauseContainer.innerHTML = `<i class="fas fa-pause state"></i>`;
+        video.play();
+    }
+    else {
+        playPauseContainer.innerHTML = `<i class="fas fa-play state"></i>`;
+        video.pause();
+    }
+}
+
+playPauseContainer.addEventListener("click", function (e) {
+    if (video) {
+        isPlaying = !isPlaying;
+        setPlayPause();
+    }
+})
+
+/******stop btn********/
+const stopBtn = document.querySelector("#stopBtn");
+const stopHandler = () => {
+    if (video) {
+        // remove the video from ui 
+        video.remove();
+        // reset all the varibales
+        isPlaying = false;
+        currentPlayTime = 0;
+        slider.value = 0;
+        video = "";
+        duration = "";
+        totalTimeElem.innerText = '--/--';
+        currentTimeElem.innerText = '00:00';
+        slider.setAttribute("value", 0);
+        stopTimer();
+        setPlayPause();
+    }
+}
+
+stopBtn.addEventListener("click", stopHandler)
+
+/***************utility function to convert secs into hrs :mns : seconds*****************/
+function timeFormat(timeCount) {
+    let time = '';
+    const sec = parseInt(timeCount, 10);
+    let hours = Math.floor(sec / 3600);
+    let minutes = Math.floor((sec - (hours * 3600)) / 60);
+    let seconds = sec - (hours * 3600) - (minutes * 60);
+    if (hours < 10)
+        hours = "0" + hours;
+    if (minutes < 10)
+        minutes = "0" + minutes;
+    if (seconds < 10)
+        seconds = "0" + seconds
+    time = `${hours}:${minutes}:${seconds}`;
+    return time;
+}
+
+// function that runs the slider and timer  
+function startTimer() {
+    timerObj = setInterval(function () {
+        currentPlayTime = Math.round(video.currentTime);
+        slider.value = currentPlayTime;
+        const time = timeFormat(currentPlayTime);
+        currentTimeElem.innerText = time;
+        if (currentPlayTime == duration) {
+            state = "pause";
+            stopTimer();
+            setPlayPause();
+            video.remove();
+            slider.value = 0;
+            currentTimeElem.innerText = "00:00:00";
+            totalTimeElem.innerText = '--/--/--';
+        }
+    }, 1000);
+}
+function stopTimer() {
+    clearInterval(timerObj);
 }
 
 
 
+/**********************enable drag and drop**********************/
+// Prevent default behavior for dragover and dragleave events
+videoPlayer.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+})
+
+videoPlayer.addEventListener('dragover', (e) => {
+    e.preventDefault();
+})
+
+videoPlayer.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+})
+
+
+videoPlayer.addEventListener('drop', (e) => {
+    e.preventDefault();
+    acceptInputHandler(e);
+})
 
 
 
 
-//************ pause the video
-const pause=document.querySelector('.fa-pause');
-pause.addEventListener("click",()=>{
-    const video=getVideo();
-    if(video==null){
-        return;
+/*********keyboard support***************/
+const body = document.querySelector("body");
+// keyboard inputs
+body.addEventListener("keyup", function (e) {
+    console.log(e.key);
+    if (!video) return;
+    if (e.code == "Space") {
+        isPlaying = !isPlaying
+        setPlayPause();
     }
-   
-    video.pause();
-    pause.style.cssText="opacity:0; pointer-events:none;";
-    play.style.cssText="opacity:1; pointer-events: auto;";
-    
-     
-});
-
-
-//************** play the video
-const play=document.querySelector('.fa-play');
-play.addEventListener("click",playfun=()=>{
-    const video=getVideo();
-    if(video==null){
-        return;
+    else if (e.key == "ArrowUp" ) {
+        volumeUpHandler()
     }
-    video.play();
-    pause.style.cssText="opacity:1; pointer-events:auto;";
-    play.style.cssText="opacity:0; pointer-events: none;";
-});
+    else if (e.key == "ArrowDown") {
+        volumeDownHandler();
+    }
+    else if (e.key == "+") {
+        speedUpHandler();
+    }
+    else if (e.key == "-") {
+        speedDownhandler();
+    }
+    else if (e.key == "ArrowRight") {
+        forward();
+    }
+    else if (e.key == "ArrowLeft") {
+        backward();
+    }
+})

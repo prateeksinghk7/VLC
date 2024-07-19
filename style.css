@@ -1,181 +1,189 @@
-html{
-    box-sizing: border-box;
+/* ***************header************** */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+/* html me pass  */
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: rgb(238, 238, 238);
 }
 
-body{
-    margin: 0px;
+header {
+    height: 5rem;
+    /* background-color: lightcoral; */
 }
 
-.top-bar, .menu{
-    /* outline: 1px solid black; */
+.titlebar {
+    height: 50%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    height: 1.6rem;
+    gap: 0.2rem;
 
 }
 
-.container{
-    position: relative;
+.title-img {
+    /* 2.5rem -> 60% */
+    height: 60%;
+    margin-left: 1rem
 }
-.menuItem{ 
-    position: relative;
+
+.title {
+    font-size: 1rem;
+
+
+}
+
+.menu-bar {
+    display: flex;
+    gap: 1rem;
+    margin-left: 1rem;
+    align-items: center;
+    height: 50%;
     cursor: pointer;
 }
 
-.menuItem:hover{
-    background-color: rgb(183, 179, 179);
+.menu {
+    position: relative;
 }
 
-.image{
-    height: 1.5rem;
-}
-.menu{
-    border: 1px solid black;
+.menu:hover {
+border: 1px solid rgb(7, 93, 133);
+    background-color: rgb(221, 244, 250);
 }
 
-ul{
-    
-    padding-top: 0.5rem;
-}
-li{
-    list-style: none;
-    margin-left: -2.4rem;
-}
-.list{
-    /* outline: 1px solid black; */
+.menu-items {
+    background-color: rgb(238, 238, 238);
     position: absolute;
-
-    width: 4rem;
-    top: 4px;
+    top: 1px;
+    width: 9rem;
     display: none;
-    background-color:rgb(230, 159, 65);
-}
-
-
-li:hover{
-    background-color: rgb(255, 149, 0);
     cursor: pointer;
 }
 
-.volume:hover .list,.playback:hover .list{
- display: block;
+.menu:hover .menu-items {
+    display: block;
 }
 
-.video{
-    height: calc(100vh - 5.8rem);
-   background-color: black;
+li {
+    padding: 0.25rem;
 }
-.footer{
-    height: 2rem;
+li:hover{
+background-color: rgb(172, 172, 172)
 }
 
-
-.menu #file{
+.videoInput {
     display: none;
 }
 
-
-.video{
+/* main element */
+main {
+    background-color: black;
+    height: calc(100vh - 10rem);
     display: flex;
     justify-content: center;
-    position: relative;
-    z-index: -1;
+    align-items: center;
 }
 
-.biglogo{
-height: 12rem;
- position: absolute;
- top: 25%;
- left: 43%;
+.video {
+    height: 100%;
 }
 
-.footer{
-    display: flex;
-    flex-direction: column;
-}
-
-.toast{
-    position: absolute;
+.toast {
+    color: white;
     font-size: 2rem;
-   
-    right: 1rem;
-    top:5rem;
-    color: rgb(255, 255, 255);
-    /* background-color: rgb(211, 211, 211); */
-    font-size: 2rem; 
+    position: fixed;
+    top: 99px;
+    right: 47px;
+    display: none;
 }
 
-
-.fa-pause, .fa-play, .fa-expand{
-padding-top: 0.2rem;
-font-size: 1rem;
-padding-left: 1rem;
-    cursor: pointer;
- opacity:0.5; 
-  pointer-events: none; 
+/* footer */
+footer {
+    height: 5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
 }
 
-.footerOptions{
+.time-container {
     display: flex;
-    position: relative;
-
+    gap: 1rem;
 }
 
-.fa-play{
-    position: absolute;
-   display: inline;
-   opacity: 0; 
-}
-
-
-.progressbar{
-    display: flex;
-    position: relative;
-    justify-content: space-between;
+.time-container>* {
+    /* outline: 1px solid red; */
     text-align: center;
-    padding-top:5px;
-    height: 1rem;
 }
 
+.current-time,.total-time {
+    width: 5%;
+    min-width: 44px;
 
-#timer{
-  min-width: 3.5rem;
-  max-width: 5%;
-  padding-left: 1px;
-}
-#totaldur{
-   min-width: 3.5rem;
 
 }
-#progress{
-    border: 1px solid black;
-   width: 90%;
+
+.time-slider {
+    width: 93%;
 }
-progress[value] {
+
+.slider {
+    width: 100%;
+    opacity: 0.7;
+}
+
+ 
+
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgb(221, 218, 218);
+    border: 1px solid rgb(126, 124, 124);
+    height: 20px;
+    width: 20px;
+}
+
+.btn:hover {
+    border: 1px solid rgb(7, 93, 133);
+    background-color: rgb(221, 244, 250);
+}
+
+.menu-btns {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    
+}
+
+i {
+    color: rgba(82, 82, 82, 0.843);
+    font-size: 14px;
+}
+
+.play_pause-container {
+    padding: 7px;
+    height: 25px;
+    width: 25px;
+    padding: 7px;
+
+}
+
+.rest-options {
+    display: flex;
+    gap: 0.3rem;
+    align-items: flex-end;
+}
+
+@media (max-width: 1000px) {
+    .time-slider {
+        width: 75%;
+    }
+
+    .time-container {
+        justify-content: space-evenly;
+    }
 
    
-    border-radius: 3px;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
-    color: dodgerblue;
-  
-    height: 15px;
-
-    width: 100%;
 }
-
-
-/* WebKit styles */
- progress[value]::-webkit-progress-bar {
-    background-color: white;
-    border-radius: 3px;
-    box-shadow: 0 2px 3px rgba(225, 0, 0, 0.25) inset;
-} 
-
-progress[value]::-webkit-progress-value {
-    background-image: 
-    linear-gradient(to right, green, cyan);
-    border-radius: 3px;
-    position: relative;
-    transition: width 1s linear;
-} 
